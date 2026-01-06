@@ -26,6 +26,9 @@ jobs:
       - name: Build Web
         run: flutter build web --base-href "/tools_hub/"
 
+      - name: Copy index.html to 404.html
+        run: cp build/web/index.html build/web/404.html
+
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
         with:
