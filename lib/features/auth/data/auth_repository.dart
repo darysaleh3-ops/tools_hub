@@ -73,5 +73,18 @@ class AuthRepository {
     return _auth.signInAnonymously();
   }
 
+  Future<UserModel?> getUserData(String uid) async {
+    try {
+      final doc = await _firestore.collection('users').doc(uid).get();
+      if (doc.exists && doc.data() != null) {
+        return UserModel.fromMap(doc.data()!);
+      }
+      return null;
+    } catch (e) {
+      // Return null or rethrow based on preference, here null for safety
+      return null;
+    }
+  }
+
   Future<void> signOut() => _auth.signOut();
 }

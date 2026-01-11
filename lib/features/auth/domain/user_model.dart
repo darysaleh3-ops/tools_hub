@@ -3,13 +3,17 @@ class UserModel {
   final String email;
   final String username;
   final String phoneNumber;
+  final String role;
 
   UserModel({
     required this.uid,
     required this.email,
     required this.username,
     required this.phoneNumber,
+    this.role = 'user',
   });
+
+  bool get isAdmin => role == 'admin';
 
   Map<String, dynamic> toMap() {
     return {
@@ -17,6 +21,7 @@ class UserModel {
       'email': email,
       'username': username,
       'phoneNumber': phoneNumber,
+      'role': role,
     };
   }
 
@@ -26,6 +31,7 @@ class UserModel {
       email: map['email'] ?? '',
       username: map['username'] ?? '',
       phoneNumber: map['phoneNumber'] ?? '',
+      role: map['role'] ?? 'user',
     );
   }
 }
