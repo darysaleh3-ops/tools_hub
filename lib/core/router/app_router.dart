@@ -62,8 +62,9 @@ final routerProvider = Provider<GoRouter>((ref) {
       if (state.matchedLocation.startsWith('/admin')) {
         // Public/Semi-protected admin pages
         if (state.matchedLocation == '/admin-register' ||
-            state.matchedLocation == '/admin-login')
+            state.matchedLocation == '/admin-login') {
           return null;
+        }
 
         if (!userProfileAsync.isLoading) {
           final user = userProfileAsync.asData?.value;

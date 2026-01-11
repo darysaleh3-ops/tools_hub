@@ -88,8 +88,9 @@ class _AddEditEquipmentScreenState
       body: widget.id != null && equipmentAsync != null
           ? equipmentAsync.when(
               data: (equipment) {
-                if (equipment == null)
+                if (equipment == null) {
                   return const Center(child: Text('المعدة غير موجودة'));
+                }
                 _populateForm(equipment);
                 return _buildForm();
               },
