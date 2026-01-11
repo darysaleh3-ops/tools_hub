@@ -29,8 +29,27 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Build Web
+      - name: Build Web (Flutter)
         run: flutter build web --base-href "/tools_hub/"
+
+      # --- NEW: Build React Admin ---
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install & Build React Admin
+        run: |
+          cd admin_panel
+          npm install
+          npm run build
+          cd ..
+      
+      - name: Move React Admin to Flutter Build Folder
+        run: |
+          mkdir -p build/web/admin_panel
+          cp -r admin_panel/dist/* build/web/admin_panel/
+      # -----------------------------
 
       - name: Copy index.html to 404.html
         run: cp build/web/index.html build/web/404.html
