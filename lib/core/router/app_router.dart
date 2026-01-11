@@ -14,6 +14,8 @@ import '../../features/admin/presentation/admin_approval_screen.dart';
 import '../../features/admin/presentation/admin_layout.dart';
 import '../../features/admin/presentation/dashboard_screen.dart';
 import '../../features/admin/presentation/admin_login_screen.dart';
+import '../../features/admin/presentation/equipment/admin_equipment_screen.dart';
+import '../../features/admin/presentation/equipment/add_edit_equipment_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authProvider);
