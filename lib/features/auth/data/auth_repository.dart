@@ -121,7 +121,10 @@ class AuthRepository {
 
   Future<UserModel?> getUserData(String uid) async {
     try {
-      final doc = await _firestore.collection('users').doc(uid).get();
+      final doc = await _firestore
+          .collection('users')
+          .doc(uid)
+          .get(const GetOptions(source: Source.server));
       if (doc.exists && doc.data() != null) {
         return UserModel.fromMap(doc.data()!);
       }
