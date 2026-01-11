@@ -175,6 +175,29 @@ class HomeScreen extends ConsumerWidget {
                       },
                       child: const Text('مسح الفلاتر'),
                     ),
+                    const SizedBox(height: 24),
+                    ElevatedButton.icon(
+                      onPressed: () async {
+                        try {
+                          await ref
+                              .read(equipmentRepositoryProvider)
+                              .seedInitialData();
+                          ref.refresh(equipmentListProvider);
+                        } catch (e) {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('فشل إضافة البيانات: $e')),
+                            );
+                          }
+                        }
+                      },
+                      icon: const Icon(Icons.cloud_upload),
+                      label: const Text('إضافة بيانات تجريبية (للمطورين)'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey[200],
+                        foregroundColor: Colors.black,
+                      ),
+                    ),
                   ],
                 ),
               )
