@@ -9,7 +9,7 @@ import '../../features/auth/presentation/forgot_password_screen.dart';
 import '../../features/auth/presentation/otp_screen.dart';
 import '../../features/equipment/presentation/home_screen.dart';
 import '../../features/equipment/presentation/equipment_details_screen.dart';
-import '../../features/admin/presentation/admin_register_screen.dart';
+
 import '../../features/admin/presentation/admin_approval_screen.dart';
 import '../../features/admin/presentation/admin_layout.dart';
 import '../../features/admin/presentation/dashboard_screen.dart';
