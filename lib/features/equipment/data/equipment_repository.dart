@@ -53,10 +53,19 @@ class EquipmentRepository {
   EquipmentRepository(this._firestore);
 
   Future<List<Equipment>> getEquipment() async {
-    final snapshot = await _firestore.collection('equipment').get();
-    return snapshot.docs
-        .map((doc) => Equipment.fromMap(doc.data(), doc.id))
-        .toList();
+    try {
+      final snapshot = await _firestore
+          .collection('equipment')
+          .get()
+          .timeout(const Duration(seconds: 10));
+      return snapshot.docs
+          .map((doc) => Equipment.fromMap(doc.data(), doc.id))
+          .toList();
+    } catch (e) {
+      throw Exception(
+        'فشل الاتصال بقاعدة البيانات. يرجى التأكد من إعدادات Firestore: $e',
+      );
+    }
   }
 
   Future<Equipment?> getEquipmentById(String id) async {
