@@ -182,6 +182,7 @@ class HomeScreen extends ConsumerWidget {
                           await ref
                               .read(equipmentRepositoryProvider)
                               .seedInitialData();
+                          // ignore: unused_result
                           ref.refresh(equipmentListProvider);
                         } catch (e) {
                           if (context.mounted) {
