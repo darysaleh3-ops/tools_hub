@@ -95,10 +95,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/register',
         builder: (context, state) => const RegisterScreen(),
       ),
-      GoRoute(
-        path: '/admin-register',
-        builder: (context, state) => const AdminRegisterScreen(),
-      ),
+
       GoRoute(
         path: '/admin-approval',
         builder: (context, state) => const AdminApprovalScreen(),

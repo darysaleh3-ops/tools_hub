@@ -125,10 +125,7 @@ class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
                         : const Text('دخول المشرف'),
                   ),
                   const SizedBox(height: 16),
-                  TextButton(
-                    onPressed: () => context.go('/admin-register'),
-                    child: const Text('تسجيل مشرف جديد'),
-                  ),
+
                   TextButton(
                     onPressed: () => context.go('/'),
                     child: const Text(
