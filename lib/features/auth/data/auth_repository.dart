@@ -121,16 +121,29 @@ class AuthRepository {
 
   Future<UserModel?> getUserData(String uid) async {
     try {
-      final doc = await _firestore
-          .collection('users')
-          .doc(uid)
-          .get(const GetOptions(source: Source.server));
-      if (doc.exists && doc.data() != null) {
-        return UserModel.fromMap(doc.data()!);
+      // 1. Try server first
+      try {
+        final doc = await _firestore
+            .collection('users')
+            .doc(uid)
+            .get(const GetOptions(source: Source.server));
+
+        if (doc.exists && doc.data() != null) {
+          return UserModel.fromMap(doc.data()!);
+        }
+      } catch (e) {
+        // 2. Fallback to cache if server fails
+        final doc = await _firestore
+            .collection('users')
+            .doc(uid)
+            .get(const GetOptions(source: Source.cache));
+
+        if (doc.exists && doc.data() != null) {
+          return UserModel.fromMap(doc.data()!);
+        }
       }
       return null;
     } catch (e) {
-      // Return null or rethrow based on preference, here null for safety
       return null;
     }
   }

@@ -35,7 +35,7 @@ class UserModel {
       email: map['email'] ?? '',
       username: map['username'] ?? '',
       phoneNumber: map['phoneNumber'] ?? '',
-      role: map['role'] ?? 'user',
+      role: (map['role'] ?? 'user').toString().trim(),
       status: map['status'] ?? 'active',
     );
   }

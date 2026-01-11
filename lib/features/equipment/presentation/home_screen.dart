@@ -6,6 +6,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../auth/domain/auth_notifier.dart';
 import '../data/equipment_repository.dart';
 import '../domain/equipment_model.dart';
+import '../../auth/domain/user_provider.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -16,6 +17,28 @@ class HomeScreen extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Tools Hub'),
         actions: [
+          // DEBUG: Show user role
+          Consumer(
+            builder: (context, ref, child) {
+              final userAsync = ref.watch(userProfileProvider);
+              return userAsync.when(
+                data: (user) {
+                  if (user == null) return const SizedBox.shrink();
+                  return Chip(
+                    label: Text(
+                      '${user.role} (${user.uid.substring(0, 4)}...)',
+                      style: const TextStyle(fontSize: 10),
+                    ),
+                    backgroundColor: user.isAdmin
+                        ? Colors.red[100]
+                        : Colors.green[100],
+                  );
+                },
+                loading: () => const SizedBox.shrink(),
+                error: (_, __) => const Icon(Icons.error, size: 16),
+              );
+            },
+          ),
           IconButton(
             onPressed: () {},
             icon: const Icon(Icons.notifications_none),
