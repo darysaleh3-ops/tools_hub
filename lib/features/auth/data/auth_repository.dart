@@ -18,8 +18,30 @@ class AuthRepository {
   Future<UserCredential> signInWithEmailAndPassword(
     String email,
     String password,
-  ) {
-    return _auth.signInWithEmailAndPassword(email: email, password: password);
+  ) async {
+    final credential = await _auth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+
+    // Auto-Repair: Check if user document exists, if not create it
+    if (credential.user != null) {
+      final uid = credential.user!.uid;
+      final doc = await _firestore.collection('users').doc(uid).get();
+
+      if (!doc.exists) {
+        final user = UserModel(
+          uid: uid,
+          email: email,
+          username: email.split('@')[0], // Default username from email
+          phoneNumber: '',
+          role: 'user',
+        );
+        await _firestore.collection('users').doc(uid).set(user.toMap());
+      }
+    }
+
+    return credential;
   }
 
   Future<void> sendPasswordResetEmail(String email) {
