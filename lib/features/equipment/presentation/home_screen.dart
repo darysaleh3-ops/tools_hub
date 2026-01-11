@@ -33,7 +33,7 @@ class HomeScreen extends ConsumerWidget {
           children: [
             _buildHeroSection(context, ref),
             _buildCategorySection(ref),
-            _buildEquipmentGrid(ref),
+            _buildEquipmentGrid(context, ref),
           ],
         ),
       ),
@@ -153,7 +153,7 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildEquipmentGrid(WidgetRef ref) {
+  Widget _buildEquipmentGrid(BuildContext context, WidgetRef ref) {
     final equipmentAsync = ref.watch(filteredEquipmentProvider);
 
     return Padding(
