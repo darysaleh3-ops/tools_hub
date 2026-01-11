@@ -131,6 +131,59 @@ class AuthNotifier extends Notifier<AuthState> {
     }
   }
 
+  Future<void> signIn(String email, String password) async {
+    final repository = ref.read(authRepositoryProvider);
+    state = state.copyWith(status: AuthStatus.authenticating);
+    try {
+      await repository.signInWithEmailAndPassword(email, password);
+    } catch (e) {
+      state = state.copyWith(
+        status: AuthStatus.error,
+        errorMessage: 'فشل تسجيل الدخول: ${e.toString()}',
+      );
+    }
+  }
+
+  Future<void> resetPassword(String email) async {
+    final repository = ref.read(authRepositoryProvider);
+    state = state.copyWith(status: AuthStatus.authenticating);
+    try {
+      await repository.sendPasswordResetEmail(email);
+      state = state.copyWith(
+        status: AuthStatus.unauthenticated,
+        errorMessage: 'تم إرسال رابط إعادة التعيين إلى بريدك الإلكتروني',
+      );
+    } catch (e) {
+      state = state.copyWith(
+        status: AuthStatus.error,
+        errorMessage: 'فشل إرسال الرابط: ${e.toString()}',
+      );
+    }
+  }
+
+  Future<void> register({
+    required String email,
+    required String password,
+    required String username,
+    required String phoneNumber,
+  }) async {
+    final repository = ref.read(authRepositoryProvider);
+    state = state.copyWith(status: AuthStatus.authenticating);
+    try {
+      await repository.signUpWithEmailAndPassword(
+        email: email,
+        password: password,
+        username: username,
+        phoneNumber: phoneNumber,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        status: AuthStatus.error,
+        errorMessage: 'فشل إنشاء الحساب: ${e.toString()}',
+      );
+    }
+  }
+
   Future<void> signOut() async {
     final repository = ref.read(authRepositoryProvider);
     await repository.signOut();

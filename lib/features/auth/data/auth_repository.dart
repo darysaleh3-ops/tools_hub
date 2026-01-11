@@ -1,15 +1,52 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../domain/user_model.dart';
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
-  return AuthRepository(FirebaseAuth.instance);
+  return AuthRepository(FirebaseAuth.instance, FirebaseFirestore.instance);
 });
 
 class AuthRepository {
   final FirebaseAuth _auth;
-  AuthRepository(this._auth);
+  final FirebaseFirestore _firestore;
+
+  AuthRepository(this._auth, this._firestore);
 
   Stream<User?> get authStateChanges => _auth.authStateChanges();
+
+  Future<UserCredential> signInWithEmailAndPassword(
+    String email,
+    String password,
+  ) {
+    return _auth.signInWithEmailAndPassword(email: email, password: password);
+  }
+
+  Future<void> sendPasswordResetEmail(String email) {
+    return _auth.sendPasswordResetEmail(email: email);
+  }
+
+  Future<void> signUpWithEmailAndPassword({
+    required String email,
+    required String password,
+    required String username,
+    required String phoneNumber,
+  }) async {
+    final credential = await _auth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+
+    if (credential.user != null) {
+      final user = UserModel(
+        uid: credential.user!.uid,
+        email: email,
+        username: username,
+        phoneNumber: phoneNumber,
+      );
+      await _firestore.collection('users').doc(user.uid).set(user.toMap());
+    }
+  }
 
   Future<void> verifyPhoneNumber({
     required String phoneNumber,

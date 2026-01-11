@@ -12,11 +12,13 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
-  final _phoneController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   @override
   void dispose() {
-    _phoneController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
@@ -24,77 +26,98 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
 
-    // Listen for codeSent state to navigate to OTP screen
-    ref.listen(authProvider, (previous, next) {
-      if (next.status == AuthStatus.codeSent) {
-        context.push('/otp');
-      }
-    });
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 450),
-          padding: const EdgeInsets.all(32.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'مرحباً بك في Tools Hub',
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  color: AppTheme.secondaryColor,
-                  fontWeight: FontWeight.bold,
+        child: SingleChildScrollView(
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 450),
+            padding: const EdgeInsets.all(32.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'مرحباً بك في Tools Hub',
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    color: AppTheme.secondaryColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'أدخل رقم جوالك للمتابعة',
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyLarge?.copyWith(color: Colors.grey[600]),
-              ),
-              const SizedBox(height: 48),
-              TextField(
-                controller: _phoneController,
-                keyboardType: TextInputType.phone,
-                textAlign: TextAlign.left,
-                decoration: const InputDecoration(
-                  hintText: '5xxxxxxxx',
-                  prefixIcon: Padding(
-                    padding: EdgeInsets.all(12.0),
-                    child: Text(
-                      '+966 ',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
+                const SizedBox(height: 8),
+                Text(
+                  'سجل دخولك للمتابعة',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.copyWith(color: Colors.grey[600]),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 48),
+
+                TextField(
+                  controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: const InputDecoration(
+                    labelText: 'البريد الإلكتروني',
+                    prefixIcon: Icon(Icons.email),
                   ),
                 ),
-              ),
-              if (authState.status == AuthStatus.error) ...[
                 const SizedBox(height: 16),
-                Text(
-                  authState.errorMessage ?? 'حدث خطأ ما',
-                  style: const TextStyle(color: Colors.red),
+
+                TextField(
+                  controller: _passwordController,
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    labelText: 'كلمة المرور',
+                    prefixIcon: Icon(Icons.lock),
+                  ),
                 ),
-              ],
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: authState.status == AuthStatus.authenticating
-                    ? null
-                    : () {
-                        final phone = _phoneController.text.trim();
-                        if (phone.isNotEmpty) {
-                          ref.read(authProvider.notifier).sendOTP('+966$phone');
-                        }
-                      },
-                child: authState.status == AuthStatus.authenticating
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text('إرسال رمز التأكيد'),
-              ),
-              const SizedBox(height: 24),
-              Center(
-                child: TextButton(
+
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: TextButton(
+                    onPressed: () => context.push('/forgot-password'),
+                    child: const Text('نسيت كلمة المرور؟'),
+                  ),
+                ),
+
+                if (authState.status == AuthStatus.error) ...[
+                  const SizedBox(height: 16),
+                  Text(
+                    authState.errorMessage ?? 'حدث خطأ ما',
+                    style: const TextStyle(color: Colors.red),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+                const SizedBox(height: 24),
+
+                ElevatedButton(
+                  onPressed: authState.status == AuthStatus.authenticating
+                      ? null
+                      : () {
+                          final email = _emailController.text.trim();
+                          final password = _passwordController.text.trim();
+                          if (email.isNotEmpty && password.isNotEmpty) {
+                            ref
+                                .read(authProvider.notifier)
+                                .signIn(email, password);
+                          }
+                        },
+                  child: authState.status == AuthStatus.authenticating
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text('تسجيل الدخول'),
+                ),
+                const SizedBox(height: 16),
+
+                TextButton(
+                  onPressed: () => context.push('/register'),
+                  child: const Text('ليس لديك حساب؟ إنشاء حساب جديد'),
+                ),
+
+                const Divider(height: 32),
+
+                TextButton(
                   onPressed: authState.status == AuthStatus.authenticating
                       ? null
                       : () =>
@@ -104,8 +127,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     style: TextStyle(color: Colors.grey),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
