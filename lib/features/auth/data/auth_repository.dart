@@ -48,6 +48,30 @@ class AuthRepository {
     return _auth.sendPasswordResetEmail(email: email);
   }
 
+  Future<void> registerAdmin({
+    required String email,
+    required String password,
+    required String username,
+    required String phoneNumber,
+  }) async {
+    final credential = await _auth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+
+    if (credential.user != null) {
+      final user = UserModel(
+        uid: credential.user!.uid,
+        email: email,
+        username: username,
+        phoneNumber: phoneNumber,
+        role: 'admin',
+        status: 'pending',
+      );
+      await _firestore.collection('users').doc(user.uid).set(user.toMap());
+    }
+  }
+
   Future<void> signUpWithEmailAndPassword({
     required String email,
     required String password,

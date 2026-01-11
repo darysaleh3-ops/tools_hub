@@ -184,6 +184,29 @@ class AuthNotifier extends Notifier<AuthState> {
     }
   }
 
+  Future<void> registerAdmin({
+    required String email,
+    required String password,
+    required String username,
+    required String phoneNumber,
+  }) async {
+    final repository = ref.read(authRepositoryProvider);
+    state = state.copyWith(status: AuthStatus.authenticating);
+    try {
+      await repository.registerAdmin(
+        email: email,
+        password: password,
+        username: username,
+        phoneNumber: phoneNumber,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        status: AuthStatus.error,
+        errorMessage: 'فشل تسجيل المشرف: ${e.toString()}',
+      );
+    }
+  }
+
   Future<void> signOut() async {
     final repository = ref.read(authRepositoryProvider);
     await repository.signOut();

@@ -9,6 +9,8 @@ import '../../features/auth/presentation/forgot_password_screen.dart';
 import '../../features/auth/presentation/otp_screen.dart';
 import '../../features/equipment/presentation/home_screen.dart';
 import '../../features/equipment/presentation/equipment_details_screen.dart';
+import '../../features/admin/presentation/admin_register_screen.dart';
+import '../../features/admin/presentation/admin_approval_screen.dart';
 import '../../features/admin/presentation/admin_layout.dart';
 import '../../features/admin/presentation/dashboard_screen.dart';
 
@@ -27,19 +29,40 @@ final routerProvider = Provider<GoRouter>((ref) {
           state.matchedLocation == '/login' ||
           state.matchedLocation == '/otp' ||
           state.matchedLocation == '/register' ||
-          state.matchedLocation == '/forgot-password';
+          state.matchedLocation == '/forgot-password' ||
+          state.matchedLocation == '/admin-register' || // Allow public access
+          state.matchedLocation ==
+              '/admin-approval'; // Allow semi-protected access
 
       if (!loggedIn && !loggingIn) return '/login';
-      if (loggedIn && loggingIn) return '/';
+      if (loggedIn && loggingIn) {
+        // If logged in but trying to access public auth pages, go home
+        // BUT if accessing admin-approval, let them stay (handled below)
+        if (state.matchedLocation != '/admin-approval') return '/';
+      }
 
       // 2. Admin Guard
       if (state.matchedLocation.startsWith('/admin')) {
-        // If profile is still loading, let it stay (it matches /admin so it shows loading/shell)
-        // Once loaded, if not admin -> Redirect to Home
+        // Exclude /admin-register from this check (it's public)
+        if (state.matchedLocation == '/admin-register') return null;
+
         if (!userProfileAsync.isLoading) {
           final user = userProfileAsync.asData?.value;
+
+          // Not an admin? Kick out.
           if (user == null || !user.isAdmin) {
             return '/';
+          }
+
+          // Admin but pending? Go to approval.
+          if (state.matchedLocation != '/admin-approval' && !user.isActive) {
+            return '/admin-approval';
+          }
+
+          // Admin and active?
+          // If trying to see approval page but is active, go to dashboard
+          if (state.matchedLocation == '/admin-approval' && user.isActive) {
+            return '/admin';
           }
         }
       }
@@ -51,6 +74,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/register',
         builder: (context, state) => const RegisterScreen(),
+      ),
+      GoRoute(
+        path: '/admin-register',
+        builder: (context, state) => const AdminRegisterScreen(),
+      ),
+      GoRoute(
+        path: '/admin-approval',
+        builder: (context, state) => const AdminApprovalScreen(),
       ),
       GoRoute(
         path: '/forgot-password',
@@ -66,7 +97,6 @@ final routerProvider = Provider<GoRouter>((ref) {
       // Admin Routes
       ShellRoute(
         builder: (context, state, child) {
-          // Optional: Show loading if profile is fetching
           if (userProfileAsync.isLoading) {
             return const Scaffold(
               body: Center(child: CircularProgressIndicator()),
