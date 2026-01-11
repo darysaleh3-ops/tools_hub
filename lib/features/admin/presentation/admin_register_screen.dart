@@ -79,7 +79,7 @@ class _AdminRegisterScreenState extends ConsumerState<AdminRegisterScreen> {
                     child: const Text('لدي حساب إداري بالفعل؟ دخول المشرف'),
                   ),
                   TextButton(
-                    onPressed: () => context.go('/admin-register'),
+                    onPressed: () => context.go('/register'),
                     child: const Text('مستخدم عادي؟'),
                   ),
                   TextFormField(
