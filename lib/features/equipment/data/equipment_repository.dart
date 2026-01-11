@@ -92,7 +92,7 @@ class EquipmentRepository {
         rating: 5,
         rentalPrice: 1200,
         purchasePrice: 450000,
-        availability: true,
+        isAvailable: true,
       ),
       Equipment(
         id: '',
@@ -105,7 +105,7 @@ class EquipmentRepository {
         rating: 4,
         rentalPrice: 350,
         purchasePrice: 85000,
-        availability: true,
+        isAvailable: true,
       ),
       Equipment(
         id: '',
@@ -117,7 +117,7 @@ class EquipmentRepository {
         rating: 5,
         rentalPrice: 200,
         purchasePrice: 45000,
-        availability: true,
+        isAvailable: true,
       ),
       Equipment(
         id: '',
@@ -129,7 +129,7 @@ class EquipmentRepository {
         rating: 4,
         rentalPrice: 50,
         purchasePrice: 2500,
-        availability: true,
+        isAvailable: true,
       ),
     ];
 
