@@ -17,25 +17,34 @@ class HomeScreen extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Tools Hub'),
         actions: [
-          // DEBUG: Show user role
+          // Admin Dashboard Button
           Consumer(
             builder: (context, ref, child) {
               final userAsync = ref.watch(userProfileProvider);
               return userAsync.when(
                 data: (user) {
-                  if (user == null) return const SizedBox.shrink();
-                  return Chip(
-                    label: Text(
-                      '${user.role} (${user.uid.substring(0, 4)}...)',
-                      style: const TextStyle(fontSize: 10),
+                  if (user == null || !user.isAdmin) {
+                    return const SizedBox.shrink();
+                  }
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: ElevatedButton.icon(
+                      onPressed: () => context.go('/admin'),
+                      icon: const Icon(Icons.dashboard, size: 16),
+                      label: const Text('لوحة التحكم'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red.shade400,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+                      ),
                     ),
-                    backgroundColor: user.isAdmin
-                        ? Colors.red[100]
-                        : Colors.green[100],
                   );
                 },
                 loading: () => const SizedBox.shrink(),
-                error: (_, __) => const Icon(Icons.error, size: 16),
+                error: (_, __) => const SizedBox.shrink(),
               );
             },
           ),

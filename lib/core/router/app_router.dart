@@ -51,7 +51,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       if (loggedIn && loggingIn) {
         if (state.matchedLocation == '/admin-approval') {
           // Let logic below handle approval check
-        } else if (state.matchedLocation == '/admin-login') {
+        } else if (state.matchedLocation.startsWith('/admin-login')) {
           return '/admin';
         } else {
           return '/';
