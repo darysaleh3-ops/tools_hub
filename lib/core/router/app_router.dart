@@ -128,9 +128,20 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: '/admin/equipment',
-            builder: (context, state) => const Scaffold(
-              body: Center(child: Text('إدارة المعدات (قريباً)')),
-            ),
+            builder: (context, state) => const AdminEquipmentScreen(),
+            routes: [
+              GoRoute(
+                path: 'add',
+                builder: (context, state) => const AddEditEquipmentScreen(),
+              ),
+              GoRoute(
+                path: 'edit/:id',
+                builder: (context, state) {
+                  final id = state.pathParameters['id'];
+                  return AddEditEquipmentScreen(id: id);
+                },
+              ),
+            ],
           ),
         ],
       ),

@@ -140,4 +140,21 @@ class EquipmentRepository {
     }
     await batch.commit();
   }
+
+  Future<void> addEquipment(Equipment equipment) async {
+    final docRef = _firestore.collection('equipment').doc();
+    final equipmentWithId = equipment.copyWith(id: docRef.id);
+    await docRef.set(equipmentWithId.toMap());
+  }
+
+  Future<void> updateEquipment(Equipment equipment) async {
+    await _firestore
+        .collection('equipment')
+        .doc(equipment.id)
+        .update(equipment.toMap());
+  }
+
+  Future<void> deleteEquipment(String id) async {
+    await _firestore.collection('equipment').doc(id).delete();
+  }
 }

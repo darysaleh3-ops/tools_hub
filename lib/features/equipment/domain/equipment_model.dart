@@ -21,6 +21,30 @@ class Equipment {
     this.isAvailable = true,
   });
 
+  Equipment copyWith({
+    String? id,
+    String? name,
+    String? description,
+    String? imageUrl,
+    double? rentalPrice,
+    double? purchasePrice,
+    String? category,
+    double? rating,
+    bool? isAvailable,
+  }) {
+    return Equipment(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      imageUrl: imageUrl ?? this.imageUrl,
+      rentalPrice: rentalPrice ?? this.rentalPrice,
+      purchasePrice: purchasePrice ?? this.purchasePrice,
+      category: category ?? this.category,
+      rating: rating ?? this.rating,
+      isAvailable: isAvailable ?? this.isAvailable,
+    );
+  }
+
   factory Equipment.fromMap(Map<String, dynamic> map, String id) {
     return Equipment(
       id: id,
